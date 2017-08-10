@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.android.practice.androidutilityclasses.view.CommonAppCompatActivity;
 import com.android.practice.library.Applog;
@@ -16,6 +17,7 @@ import com.android.practice.library.interf.ApiProgressHelper;
 import com.android.practice.library.mode.Example;
 import com.android.practice.library.mode.ServerResponse;
 import com.android.practice.library.rest.APIManager;
+import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 
 import retrofit2.Call;
@@ -54,7 +56,36 @@ public class MainActivity extends CommonAppCompatActivity {
                 if (PermissionUtils.hasPermission(MainActivity.this,
                         Manifest.permission.ACCESS_FINE_LOCATION)) {
                     if (mGpsTracker.getIsGPSTrackingEnabled()) {
-                        APIManager.getInstance().apiWeatherByLatLong(MainActivity.this,
+                        APIManager.getInstance2(MainActivity.this)
+                                .apiWeatherByLatLongV(MainActivity.this,
+                                        new com.android.volley.Response.Listener<String>() {
+                                            @Override
+                                            public void onResponse(String response) {
+                                                hideProgressDialog();
+                                                ((TextView)findViewById(R.id.txtResult)).setText(response);
+                                                Applog.d(TAG, response);
+                                            }
+                                        }, new com.android.volley.Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                Applog.e(TAG, error.getMessage(), error);
+                                                Toaster.longToast(getResources().getString(R.string.oops_something_went_wrong));
+                                                hideProgressDialog();
+                                            }
+                                        }, new ApiProgressHelper() {
+                                            @Override
+                                            public void startProgress() {
+                                                showProgressDialog(MainActivity.this);
+                                            }
+
+                                            @Override
+                                            public void onException() {
+                                                hideProgressDialog();
+                                            }
+                                        },
+                                        String.valueOf(mGpsTracker.getLatitude()),
+                                        String.valueOf(mGpsTracker.getLongitude()));
+                        /*APIManager.getInstance().apiWeatherByLatLong(MainActivity.this,
                                 String.valueOf(mGpsTracker.getLatitude()),
                                 String.valueOf(mGpsTracker.getLongitude()), mCallback,
                                 new ApiProgressHelper() {
@@ -67,7 +98,7 @@ public class MainActivity extends CommonAppCompatActivity {
                                     public void onException() {
                                         hideProgressDialog();
                                     }
-                                });
+                                });*/
                     } else {
                         mGpsTracker.showSettingsAlert();
                     }
@@ -80,16 +111,22 @@ public class MainActivity extends CommonAppCompatActivity {
         return true;
     }
 
-    Callback<ServerResponse<Example>> mCallback = new Callback<ServerResponse<Example>>() {
+    Callback<Example> mCallback = new Callback<Example>() {
         @Override
-        public void onResponse(Call<ServerResponse<Example>> call,
-                               Response<ServerResponse<Example>> response) {
+        public void onResponse(Call<Example> call,
+                               Response<Example> response) {
             hideProgressDialog();
+            if(response.body().getError()!=null){
+                Toaster.longToast(getResources().getString(R.string.oops_something_went_wrong));
+                return;
+            }
+            ((TextView)findViewById(R.id.txtResult)).setText(response.body().toString());
+//            findViewById(R.id.txtResult).requestLayout();
             Applog.d(TAG, new Gson().toJson(response.body()));
         }
 
         @Override
-        public void onFailure(Call<ServerResponse<Example>> call, Throwable t) {
+        public void onFailure(Call<Example> call, Throwable t) {
             Toaster.longToast(getResources().getString(R.string.oops_something_went_wrong));
             hideProgressDialog();
         }
@@ -113,5 +150,11 @@ public class MainActivity extends CommonAppCompatActivity {
             String permission[] = {android.Manifest.permission.ACCESS_FINE_LOCATION};
             PermissionUtils.requestPermissions(MainActivity.this, permission, 1002);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        APIManager.getInstance2(MainActivity.this).stopAllVolleyRequest();
     }
 }

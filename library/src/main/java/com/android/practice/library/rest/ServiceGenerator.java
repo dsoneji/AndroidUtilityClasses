@@ -35,7 +35,7 @@ public class ServiceGenerator {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Request request = chain.request().newBuilder()
-                        .addHeader("Content-Type", "application/json")
+//                        .addHeader("Content-Type", "application/json")
 //                        .addHeader("X-Auth", AppConstant.X_AUTH_VALUE)
                         .build();
                 return chain.proceed(request);

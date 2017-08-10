@@ -13,7 +13,7 @@ public interface RestClient {
     http://samples.openweathermap.org/data/2.5/weather?lat=LATITUDE&lon=LONGITUDE&appid=APP_ID
      */
     @GET("weather")
-    Call<ServerResponse<Example>> weatherByLatLong(@Query("lat") String latitude,
+    Call<Example> weatherByLatLong(@Query("lat") String latitude,
                                                    @Query("lon") String longitude,
                                                    @Query("appid") String apiKey);
 }
