@@ -6,4 +6,16 @@
         android:icon="@drawable/ic_location_service"
         android:title="Location service"
         app:showAsAction="ifRoom" />
+
+    <group
+        android:id="@+id/groupMore"
+        android:visible="true">
+        <item
+            android:id="@+id/itemAllPost"
+            android:title="All posts" />
+
+        <item
+            android:id="@+id/itemSpecificPost"
+            android:title="Specific post" />
+    </group>
 </menu>

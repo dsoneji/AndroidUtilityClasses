@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.android.practice.library.custom.cardstatck.cardstack.CardStack
+        android:id="@+id/frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="30dp" />
+
+    <com.android.practice.library.custom.RippleAnimation
+        android:id="@+id/ripple_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:rb_color="@color/rippleColor"
+        app:rb_duration="3000"
+        app:rb_radius="48dp"
+        app:rb_rippleAmount="1"
+        app:rb_scale="7">
+
+
+        <!--ImageView used to display user's profile picture only-->
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_globe" />
+
+
+    </com.android.practice.library.custom.RippleAnimation>
+
+
+</LinearLayout>

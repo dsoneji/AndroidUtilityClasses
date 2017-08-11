@@ -9,4 +9,6 @@ public class AppConstant {
     public static final String API_KEY_OPEN_WEATHER_MAP = "d166c26a9ec3086c1aa5f064c4e1c457";
     public static final long CONNECTION_TIMEOUT = 60000;
     public static final String BASE_URL_OPEN_WEATHER_MAP = "http://samples.openweathermap.org/data/2.5/";
+    public static final String BASE_URL_JSON_PLACEHOLDER = "https://jsonplaceholder.typicode.com/";
+    public static final String BASE_URL_RANDOM_DOG = "https://dog.ceo/api/breeds/image/random";
 }

@@ -54,6 +54,37 @@ public class ServiceGenerator {
         return retrofit.create(restClientClass);
     }
 
+    public static <S> S createAuthService2(Class<S> restClientClass) {
+        // set your desired log level
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        //add interceptor to OkHttpClient
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.addInterceptor(httpLoggingInterceptor);
+        builder.interceptors().add(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request().newBuilder()
+//                        .addHeader("Content-Type", "application/json")
+//                        .addHeader("X-Auth", AppConstant.X_AUTH_VALUE)
+                        .build();
+                return chain.proceed(request);
+            }
+        });
+
+        builder.readTimeout(AppConstant.CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS).
+                connectTimeout(AppConstant.CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
+        okHttpClient = builder.build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(AppConstant.BASE_URL_JSON_PLACEHOLDER)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build();
+
+        return retrofit.create(restClientClass);
+    }
+
     public static void stopRunningAPI() {
         if (okHttpClient != null) {
             if (okHttpClient.dispatcher().runningCallsCount() > 0) {

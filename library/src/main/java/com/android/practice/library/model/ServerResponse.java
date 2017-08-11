@@ -1,4 +1,4 @@
-package com.android.practice.library.mode;
+package com.android.practice.library.model;
 
 import com.google.gson.annotations.SerializedName;
 

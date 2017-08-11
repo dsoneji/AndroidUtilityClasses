@@ -6,22 +6,23 @@ package com.android.practice.library.rest;
 public class Singleton {
     private final static String TAG = Singleton.class.getSimpleName();
     private static final Object LOCK = new Object();
-    private static FinalWrapper<Singleton> helperWrapper;
-    private final RestClient mRestAuthClient;
+    private static FinalWrapper<Singleton> mHelperWrapper;
+    private final RestClient mRestAuthClient1, mRestAuthClient2;
 
     private Singleton() {
-        mRestAuthClient = ServiceGenerator.createAuthService(RestClient.class);
+        mRestAuthClient1 = ServiceGenerator.createAuthService(RestClient.class);
+        mRestAuthClient2 = ServiceGenerator.createAuthService2(RestClient.class);
     }
 
     public static Singleton getInstance() {
-        FinalWrapper<Singleton> wrapper = helperWrapper;
+        FinalWrapper<Singleton> wrapper = mHelperWrapper;
 
         if (wrapper == null) {
             synchronized (LOCK) {
-                if (helperWrapper == null) {
-                    helperWrapper = new FinalWrapper<>(new Singleton());
+                if (mHelperWrapper == null) {
+                    mHelperWrapper = new FinalWrapper<>(new Singleton());
                 }
-                wrapper = helperWrapper;
+                wrapper = mHelperWrapper;
             }
         }
         return wrapper.getValue();
@@ -32,6 +33,10 @@ public class Singleton {
     }
 
     public RestClient getRestAuthClient() {
-        return mRestAuthClient;
+        return mRestAuthClient1;
+    }
+
+    public RestClient getRestAuthClient2() {
+        return mRestAuthClient2;
     }
 }
